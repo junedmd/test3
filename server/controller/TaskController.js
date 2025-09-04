@@ -51,7 +51,7 @@ export const getTask = async (req,res)=>{
 
 export const searchTasks = async (req, res) => {
   try {
-    const { q } = req.query; // one query param for all search
+    const { q } = req.query; 
 
     let filter = {};
     if (q) {
