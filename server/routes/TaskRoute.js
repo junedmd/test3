@@ -1,8 +1,9 @@
 import express from "express";
 const router=express.Router();
-import {createTask } from "../controller/TaskController.js";
+import {createTask,getTask,searchTasks } from "../controller/TaskController.js";
 
-router.post("/", createTask); // Add a new Vehicle
-// router.get("/available", getAvailableVehicles); // Get all Vehicle api
-// router.get("/", getVehicles);
+router.post("/", createTask);
+router.get("/",getTask);
+router.get("/search", searchTasks);
+
 export default router;

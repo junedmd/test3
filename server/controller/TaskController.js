@@ -3,8 +3,8 @@ import Task from "../models/Task.js";
 
 export const createTask = async (req, res) => {
   try {
-     const { name,contact,status,qualification,intrest,source,assignedTo,updatedAt} = req.body;
-     const task = await Task.create({ name,contact,status,qualification,intrest,source,assignedTo,updatedAt });
+     const { name,phone,alt_phone,email,alt_email,status,qualification,interest,source,assignedTo,job,state,city,passout,updatedAt} = req.body;
+     const task = await Task.create({ name,phone,alt_phone,email,alt_email,status,qualification,interest,source,assignedTo,job,state,city,passout,updatedAt});
 
 
     res.status(201).json({
@@ -17,81 +17,65 @@ export const createTask = async (req, res) => {
   }
 };
 
-// ✅ Get all leads (with search & filters)
-//  const getLeads = async (req, res) => {
-//   try {
-//     const { search, match = "and" } = req.query;
-//     let filters = req.query.filters ? JSON.parse(req.query.filters) : {};
 
-//     let query = [];
+export const getTask = async (req,res)=>{
+  try{
+    const Tasks= await Task.find();
+      const data = Tasks.map(task => {
+      return {
+        ...task._doc,
+        updatedAt: task.updatedAt
+          .toLocaleString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+          })
+          .replace("AM", "am")
+          .replace("PM", "pm")
+          .replace(":", ".")
+      };
+    });
 
-//     // 🔍 Search by name, email, or phone
-//     if (search) {
-//       query.push({
-//         $or: [
-//           { name: new RegExp(search, "i") },
-//           { contact: new RegExp(search, "i") }
-//         ]
-//       });
-//     }
+    res.status(201).json({
+        success:true,
+        data:data,
+        message:"You Successfully Get All Tasks Data"
+    })  
+  }catch(error){
+     res.status(500).json({ success: false, message: error.message })
+  }
+}
 
-//     // 🎯 Apply filters
-//     if (Object.keys(filters).length > 0) {
-//       query.push(filters);
-//     }
+export const searchTasks = async (req, res) => {
+  try {
+    const { q } = req.query; // one query param for all search
 
-//     // 👇 Build MongoDB query based on match type
-//     let mongoQuery = query.length > 0
-//       ? match === "or" ? { $or: query } : { $and: query }
-//       : {};
+    let filter = {};
+    if (q) {
+      const isNumber = !isNaN(q);
+      filter = {
+        $or: [
+          { name: new RegExp(q, "i") },
+          { phone: new RegExp(q, "i") },
+          { email: new RegExp(q, "i") },
+          { status: new RegExp(q, "i") },
+          {assignedTo:new RegExp(q,"i")},
+          {city:new RegExp(q,"i")},
+           ...(isNumber ? [{ passout: Number(q) }] : []) 
 
-//     const leads = await Lead.find(mongoQuery).sort({ updatedAt: -1 });
-//     res.json(leads);
+        ]
+      };
+    }
 
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const tasks = await Task.find(filter).sort({ updatedAt: -1 });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 
 
