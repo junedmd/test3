@@ -3,6 +3,7 @@ import { useState,useEffect } from "react";
 import LeadsTable from "./LeadsTable";
 import TaskForm from "./TaskForm";
 import axios from "axios";
+const API = import.meta.env.VITE_API_URL;
 export default function MainPage() {
   const [openForm, setOpenForm] = useState(false);
   const [leads, setLeads] = useState([]);
@@ -12,7 +13,7 @@ export default function MainPage() {
    async function fetchLeads() {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/tasks");
+      const res = await axios.get(`${API}/api/tasks`);
       setLeads(res.data.data);
     } catch (err) {
       console.error("Error fetching leads:", err);

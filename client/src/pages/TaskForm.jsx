@@ -1,7 +1,8 @@
 
 import { useState } from "react";
 import axios from "axios";
-
+import toast from "react-hot-toast";
+const API = import.meta.env.VITE_API_URL;
 export default function TaskForm({ onClose ,onSuccess}) {
 
 
@@ -45,8 +46,9 @@ export default function TaskForm({ onClose ,onSuccess}) {
         };
 
         try {
-            const res = await axios.post("http://localhost:5000/api/tasks", payload);
-            alert(res.data.message)
+            const res = await axios.post(`${API}/api/tasks`, payload);
+              toast.success("Lead Add Successfully");
+
             setName("");
             setPhone("");
             setAlt_Phone("");
@@ -65,7 +67,9 @@ export default function TaskForm({ onClose ,onSuccess}) {
             onSuccess?.();
             onClose?.();
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message)    
+          toast.error("Lead Failed :" + (err.response?.data?.message || "Something went wrong"));
+          
         } finally {
             setLoading(false);
         }

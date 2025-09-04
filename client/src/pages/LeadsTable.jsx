@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import { FunnelIcon, PlusIcon } from "lucide-react";
 import axios from "axios";
+const API = import.meta.env.VITE_API_URL;
 function LeadsTable({ onAddLead }) {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,8 +21,8 @@ function LeadsTable({ onAddLead }) {
     try {
       setLoading(true);
       let url = q
-        ? `http://localhost:5000/api/tasks/search?q=${q}`
-        : `http://localhost:5000/api/tasks`;
+        ? `${API}/api/tasks/search?q=${q}`
+        : `${API}/api/tasks`;
       const res = await axios.get(url);
       setLeads(res.data.data || res.data);
     } catch (err) {
